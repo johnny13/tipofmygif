@@ -287,11 +287,13 @@ $token = $user->createToken('My Token');
 echo $token->plainTextToken; # ex 1|iRoY1oAo7fvTsy2czBo97fCkVz5xCqBEiC6Oh8B3dde41b5f
 ```
 
+To make things even easier, there is a bash script that when ran will spit out a fresh token (provided you have seeded the database). Simply run `quick-token`. You MUST be in the `giphy-api` directory. Running `giphy-api/quick-token` from the root of the repo will fail. 
+
 The token format is: `{id}|{random_string}`
 
 ```
 1 = The token ID from the database
-| = Separator
+| = Separator (obviously)
 iRoY1oAo7fvTsy2czBo97fCkVz5xCqBEiC6Oh8B3dde41b5f = Random 40-character string
 ```
 
@@ -301,6 +303,7 @@ iRoY1oAo7fvTsy2czBo97fCkVz5xCqBEiC6Oh8B3dde41b5f = Random 40-character string
 - The random string is generated using Laravel's `Str::random(40)` method
 - Tokens are hashed in the database but returned as plain text for API use
 - You can create multiple tokens per user with different names
+
 
 #### Get to the GIFs already!
 
@@ -314,10 +317,11 @@ curl -X 'GET' \
   -H 'X-CSRF-TOKEN: 
 ```
 
+That will return a big ole object of 25 star related gifs. And Thats it!
+
 ## CRUDy Tables
 
 After you have retreived a Giphy response, and found the individual item you were looking for inside the response, it is time to save that item. Once a user has attached it to themselves, they can then comment, rate it, download it, etc. 
-
 
 ```
 // Create from Giphy API data
@@ -348,4 +352,14 @@ curl -X 'POST' \
   "gif_id": "3og0IMJcSI8p6hYQXS",
   "rating": 5
 }'
+```
+
+### Backend Development Extra Commands
+```bash
+./vendor/bin/sail up -d            # Start containers
+./vendor/bin/sail artisan test     # Run tests
+./vendor/bin/sail logs             # View logs
+./generate-api-docs.sh             # Update API docs
+./vendor/bin/sail artisan tinker   # PHP REPL console
+
 ```

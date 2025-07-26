@@ -106,7 +106,7 @@ The frontend will provide a modern, responsive web interface for:
 
 ## 🔑 API Key Setup
 
-This project requires a **Giphy API Key** to function:
+After you have confirmed the app is up and running, there is only one more thing you nneed to do to start searching. Get a **Giphy API Key** enabled:
 
 1. **Get a Giphy API Key**:
    - Visit [Giphy Developers](https://developers.giphy.com/)
@@ -118,12 +118,6 @@ This project requires a **Giphy API Key** to function:
    cd giphy-api
    # Edit .env file
    GIPHY_API_KEY=your_actual_api_key_here
-   ```
-
-3. **Restart the application**:
-   ```bash
-   ./vendor/bin/sail down
-   ./vendor/bin/sail up -d
    ```
 
 ## 📚 Documentation
@@ -142,16 +136,6 @@ User (1) ←→ (Many) Rating
 User (1) ←→ (Many) Comment
 Gif (1) ←→ (Many) Rating
 Gif (1) ←→ (Many) Comment
-```
-
-### Backend Development Extra Commands
-```bash
-./vendor/bin/sail up -d            # Start containers
-./vendor/bin/sail artisan test     # Run tests
-./vendor/bin/sail logs             # View logs
-./generate-api-docs.sh             # Update API docs
-./vendor/bin/sail artisan tinker   # PHP REPL console
-
 ```
 
 ### Frontend Development
