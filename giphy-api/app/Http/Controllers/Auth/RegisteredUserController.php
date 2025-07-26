@@ -11,12 +11,43 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
+/**
+ * @OA\Tag(
+ *     name="Authentication",
+ *     description="User authentication endpoints"
+ * )
+ */
 class RegisteredUserController extends Controller
 {
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * @OA\Post(
+     *     path="/register",
+     *     tags={"Authentication"},
+     *     summary="Register a new user",
+     *     description="Create a new user account and automatically log them in",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation"},
+     *             @OA\Property(property="name", type="string", maxLength=255, description="User's full name"),
+     *             @OA\Property(property="email", type="string", format="email", maxLength=255, description="User's email address"),
+     *             @OA\Property(property="password", type="string", minLength=8, description="Password (minimum 8 characters)"),
+     *             @OA\Property(property="password_confirmation", type="string", description="Password confirmation")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="User registered successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request): Response
     {
