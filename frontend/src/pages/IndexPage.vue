@@ -1,43 +1,25 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+    <div v-if="authStore.isAuthenticated" class="text-white">
+      Welcome, {{ authStore.user?.name }}
+    </div>
+    <div v-if="!authStore.isAuthenticated" class="text-white">
+      You are not logged in. Please login to continue. <br>
+      Use this link to login: <q-btn @click="$router.push('/login')">Login Page</q-btn>
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
+import { onMounted } from 'vue';
+import { useAuthStore } from 'src/stores/auth-store';
 
-const todos = ref<Todo[]>([
-  {
-    id: 1,
-    content: 'ct1',
-  },
-  {
-    id: 2,
-    content: 'ct2',
-  },
-  {
-    id: 3,
-    content: 'ct3',
-  },
-  {
-    id: 4,
-    content: 'ct4',
-  },
-  {
-    id: 5,
-    content: 'ct5',
-  },
-]);
+// const router = useRouter();
+// const $q = useQuasar();
+const authStore = useAuthStore();
 
-const meta = ref<Meta>({
-  totalCount: 1200,
+onMounted(() => {
+  void authStore.initializeAuth();
 });
+
 </script>

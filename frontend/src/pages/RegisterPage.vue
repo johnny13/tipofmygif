@@ -27,11 +27,11 @@
           outlined
         >
           <template v-slot:append>
-            <q-icon
-              :name="showPassword ? 'visibility' : 'visibility_off'"
-              class="cursor-pointer"
-              @click="showPassword = !showPassword"
-            />
+                          <q-icon
+                :name="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                class="cursor-pointer"
+                @click="showPassword = !showPassword"
+              />
           </template>
         </q-input>
 

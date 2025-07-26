@@ -1,1 +1,6 @@
 // app global css in SCSS form
+@import '@fortawesome/fontawesome-free/css/all.css';
+
+.input-lg-text {
+  font-size: 1.5rem;
+}

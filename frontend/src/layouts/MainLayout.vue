@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+                  <q-btn flat dense round icon="fas fa-bars" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title> Tip of My GIF </q-toolbar-title>
 
@@ -15,7 +15,7 @@
             flat
             dense
             round
-            icon="logout"
+            icon="fas fa-sign-out-alt"
             aria-label="Logout"
             @click="handleLogout"
             :loading="authStore.isLoading"
@@ -25,7 +25,7 @@
             flat
             dense
             round
-            icon="login"
+            icon="fas fa-sign-in-alt"
             aria-label="Login"
             @click="$router.push('/login')"
           />
@@ -34,11 +34,32 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+      <div class="q-pa-md">
+        <q-list bordered>
+          <q-item-label header class="bg-black"> Application Menu </q-item-label>
 
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
+          <q-item clickable v-ripple  to="/search">
+            <q-item-section>SEARCH GIPHY</q-item-section>
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-search" />
+            </q-item-section>
+          </q-item>
+          <q-separator />
+          <q-item clickable v-ripple  to="/saved">
+            <q-item-section>VIEW SAVED</q-item-section>
+            <q-item-section avatar>
+              <q-icon color="primary" name="fas fa-star" />
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+      <div class="q-pa-md q-mt-md">
+        <q-list>
+          <q-item-label header> External Links </q-item-label>
+
+          <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+        </q-list>
+      </div>
     </q-drawer>
 
     <q-page-container>
@@ -56,46 +77,16 @@ import { useAuthStore } from 'src/stores/auth-store';
 
 const linksList: EssentialLinkProps[] = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    title: 'API Docs',
+    caption: 'Swagger UI',
+    icon: 'fas fa-graduation-cap',
+    link: 'http://localhost:8000/api/documentation',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
+    title: 'Github Repo',
+    caption: 'github.com/johnny13/tipofmygif',
+    icon: 'fab fa-github',
+    link: 'https://github.com/johnny13/tipofmygif',
   },
 ];
 
