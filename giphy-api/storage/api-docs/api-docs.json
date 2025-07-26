@@ -265,6 +265,371 @@
                 ]
             }
         },
+        "/api/gifs/save": {
+            "post": {
+                "tags": [
+                    "GIFs"
+                ],
+                "summary": "Save a GIF to user's collection",
+                "description": "Save a GIF from Giphy API response",
+                "operationId": "5a6491135976c271108cd9829e4ef771",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "giphy_id",
+                                    "giphy_data"
+                                ],
+                                "properties": {
+                                    "giphy_id": {
+                                        "description": "Giphy's unique identifier",
+                                        "type": "string"
+                                    },
+                                    "giphy_data": {
+                                        "description": "Complete Giphy API response object",
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "GIF saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "GIF saved successfully"
+                                        },
+                                        "gif": {
+                                            "$ref": "#/components/schemas/Gif"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "GIF already saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "GIF already saved"
+                                        },
+                                        "gif": {
+                                            "$ref": "#/components/schemas/Gif"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/gifs/my": {
+            "get": {
+                "tags": [
+                    "GIFs"
+                ],
+                "summary": "Get user's saved GIFs",
+                "description": "Get user's saved GIFs",
+                "operationId": "91f60d3657376fee6b06cf791896c166",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter by content rating",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "g",
+                                "pg",
+                                "pg-13",
+                                "r"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User's saved GIFs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Gif"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "last_page": {
+                                            "type": "integer"
+                                        },
+                                        "per_page": {
+                                            "type": "integer"
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/gifs/{id}": {
+            "get": {
+                "tags": [
+                    "GIFs"
+                ],
+                "summary": "Get a specific saved GIF",
+                "description": "Get a specific saved GIF",
+                "operationId": "18b642a3d315318a23bfffe8a35aa8a7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "GIF ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GIF details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Gif"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "GIF not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "GIFs"
+                ],
+                "summary": "Delete a saved GIF",
+                "description": "Delete a saved GIF",
+                "operationId": "3c57f8b79cb0976035667d7e4e8db9db",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "GIF ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GIF deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "GIF removed from your collection"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "GIF not found"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/gifs/check/{giphy_id}": {
+            "get": {
+                "tags": [
+                    "GIFs"
+                ],
+                "summary": "Check if a GIF is saved by the user",
+                "description": "Check if a GIF is saved by the user",
+                "operationId": "9c9ee113a92b5af8034201c82632b500",
+                "parameters": [
+                    {
+                        "name": "giphy_id",
+                        "in": "path",
+                        "description": "Giphy's unique identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "saved": {
+                                            "type": "boolean"
+                                        },
+                                        "gif": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/Gif"
+                                                }
+                                            ],
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/gifs/stats": {
+            "get": {
+                "tags": [
+                    "GIFs"
+                ],
+                "summary": "Get statistics about user's saved GIFs",
+                "description": "Get statistics about user's saved GIFs",
+                "operationId": "d41370ca05809fe3c14daceb02fe1774",
+                "responses": {
+                    "200": {
+                        "description": "GIF statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_saved": {
+                                            "type": "integer"
+                                        },
+                                        "by_rating": {
+                                            "type": "object"
+                                        },
+                                        "with_verified_authors": {
+                                            "type": "integer"
+                                        },
+                                        "total_size": {
+                                            "type": "string"
+                                        },
+                                        "average_size": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/gifs/search": {
             "get": {
                 "tags": [
@@ -679,6 +1044,149 @@
                 },
                 "type": "object"
             },
+            "Gif": {
+                "title": "Gif",
+                "description": "A GIF retrieved from the Giphy API",
+                "properties": {
+                    "id": {
+                        "description": "Database ID",
+                        "type": "integer"
+                    },
+                    "giphy_id": {
+                        "description": "Giphy's unique identifier",
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "description": "User ID who saved this GIF",
+                        "type": "integer"
+                    },
+                    "title": {
+                        "description": "GIF title",
+                        "type": "string"
+                    },
+                    "slug": {
+                        "description": "GIF slug",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Content type (gif, sticker, etc.)",
+                        "type": "string"
+                    },
+                    "rating": {
+                        "description": "Content rating (g, pg, pg-13, r)",
+                        "type": "string"
+                    },
+                    "url": {
+                        "description": "Giphy page URL",
+                        "type": "string"
+                    },
+                    "bitly_url": {
+                        "description": "Bitly shortened URL",
+                        "type": "string"
+                    },
+                    "embed_url": {
+                        "description": "Embed URL for the GIF",
+                        "type": "string"
+                    },
+                    "original_width": {
+                        "description": "Original image width",
+                        "type": "integer"
+                    },
+                    "original_height": {
+                        "description": "Original image height",
+                        "type": "integer"
+                    },
+                    "original_size": {
+                        "description": "Original file size in bytes",
+                        "type": "integer"
+                    },
+                    "original_url": {
+                        "description": "Original GIF URL",
+                        "type": "string"
+                    },
+                    "original_webp": {
+                        "description": "Original WebP URL",
+                        "type": "string"
+                    },
+                    "original_frames": {
+                        "description": "Number of frames in original",
+                        "type": "integer"
+                    },
+                    "original_hash": {
+                        "description": "Original image hash",
+                        "type": "string"
+                    },
+                    "downsized_url": {
+                        "description": "Downsized GIF URL for thumbnails",
+                        "type": "string"
+                    },
+                    "downsized_width": {
+                        "description": "Downsized image width",
+                        "type": "integer"
+                    },
+                    "downsized_height": {
+                        "description": "Downsized image height",
+                        "type": "integer"
+                    },
+                    "downsized_size": {
+                        "description": "Downsized file size",
+                        "type": "integer"
+                    },
+                    "still_480w_url": {
+                        "description": "480w still image URL",
+                        "type": "string"
+                    },
+                    "source_post_url": {
+                        "description": "Source post URL",
+                        "type": "string"
+                    },
+                    "source_tld": {
+                        "description": "Source top-level domain",
+                        "type": "string"
+                    },
+                    "author_username": {
+                        "description": "Author's username",
+                        "type": "string"
+                    },
+                    "author_avatar_url": {
+                        "description": "Author's avatar URL",
+                        "type": "string"
+                    },
+                    "author_profile_url": {
+                        "description": "Author's profile URL",
+                        "type": "string"
+                    },
+                    "author_display_name": {
+                        "description": "Author's display name",
+                        "type": "string"
+                    },
+                    "author_is_verified": {
+                        "description": "Whether author is verified",
+                        "type": "boolean"
+                    },
+                    "import_datetime": {
+                        "description": "Import date from Giphy",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "trending_datetime": {
+                        "description": "Trending date from Giphy",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "description": "Record creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Record update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
             "Rating": {
                 "title": "Rating",
                 "description": "A user's rating for a GIF",
@@ -763,6 +1271,10 @@
         {
             "name": "Comments",
             "description": "GIF comment management endpoints"
+        },
+        {
+            "name": "GIFs",
+            "description": "API Endpoints for managing saved GIFs"
         },
         {
             "name": "Giphy",

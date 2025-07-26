@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function gifs()
+    {
+        return $this->hasMany(Gif::class, 'created_by');
+    }
 }

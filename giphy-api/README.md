@@ -314,3 +314,29 @@ curl -X 'GET' \
   -H 'X-CSRF-TOKEN: 
 ```
 
+## Ahh CRUD!
+
+After you have retreived a Giphy response, and found the item you were looking for, it is time to save that item. Then we can comment, rate it, download it, etc. 
+
+
+```
+// Create from Giphy API data
+$gif = Gif::createFromGiphyData($giphyApiResponse);
+
+// Update existing GIF
+$gif->updateFromGiphyData($updatedGiphyData);
+
+// Find by Giphy ID
+$gif = Gif::byGiphyId('3og0IMJcSI8p6hYQXS')->first();
+
+// Get thumbnail URL
+$thumbnail = $gif->thumbnail_url;
+
+// Check if has verified author
+if ($gif->hasAuthor()) {
+    echo "By: {$gif->author_display_name}";
+}
+
+// Get human-readable file size
+echo "Size: {$gif->formatted_size}";
+```

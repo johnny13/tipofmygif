@@ -132,15 +132,26 @@ This project requires a **Giphy API Key** to function:
 - **[Swagger UI](http://localhost:80/api/documentation)** - Interactive API documentation
 - **[OpenAPI Specification](giphy-api/storage/api-docs/api-docs.json)** - Machine-readable API spec
 
-## 🛠️ Development
+## 🛠️ Development Overview
 
-### Backend Development
+Currently this is the way things are setup. Pretty standard. The backend uses OpenAPI and Swagger powered by Laravel. 
+
+```
+User (1) ←→ (Many) Gif
+User (1) ←→ (Many) Rating  
+User (1) ←→ (Many) Comment
+Gif (1) ←→ (Many) Rating
+Gif (1) ←→ (Many) Comment
+```
+
+### Backend Development Extra Commands
 ```bash
-cd giphy-api
-./vendor/bin/sail up -d          # Start containers
-./vendor/bin/sail artisan test   # Run tests
-./vendor/bin/sail logs           # View logs
-./generate-api-docs.sh           # Update API docs
+./vendor/bin/sail up -d            # Start containers
+./vendor/bin/sail artisan test     # Run tests
+./vendor/bin/sail logs             # View logs
+./generate-api-docs.sh             # Update API docs
+./vendor/bin/sail artisan tinker   # PHP REPL console
+
 ```
 
 ### Frontend Development
@@ -164,4 +175,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Laravel](https://laravel.com/) for the amazing PHP framework
 - [Laravel Sail](https://laravel.com/docs/sail) for the Docker development environment
 - [Laravel Sanctum](https://laravel.com/docs/sanctum) for API authentication 
+
+---
+
+![Giphy GIF](giphy.gif)
 

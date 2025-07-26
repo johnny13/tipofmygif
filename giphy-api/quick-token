@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Quick Token Generator for Tip of My GIF API
+# This script generates a working API token for testing
+
+echo "🔑 Generating API Token..."
+echo "=========================="
+
+# Run the PHP script with Sail
+./vendor/bin/sail exec laravel.test php quick-token.php
+
+# Check if the script ran successfully
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "✅ Token generated successfully!"
+    echo "💡 Copy the token above and use it in your API requests."
+else
+    echo ""
+    echo "❌ Failed to generate token. Make sure Sail is running:"
+    echo "   ./vendor/bin/sail up -d"
+    exit 1
+fi 
