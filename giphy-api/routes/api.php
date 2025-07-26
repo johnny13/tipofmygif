@@ -24,3 +24,16 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Authentication routes
+Route::post('/login', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest')
+    ->name('api.login');
+
+Route::post('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'store'])
+    ->middleware('guest')
+    ->name('api.register');
+
+Route::post('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ->name('api.logout');
