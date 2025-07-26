@@ -314,9 +314,9 @@ curl -X 'GET' \
   -H 'X-CSRF-TOKEN: 
 ```
 
-## Ahh CRUD!
+## CRUDy Tables
 
-After you have retreived a Giphy response, and found the item you were looking for, it is time to save that item. Then we can comment, rate it, download it, etc. 
+After you have retreived a Giphy response, and found the individual item you were looking for inside the response, it is time to save that item. Once a user has attached it to themselves, they can then comment, rate it, download it, etc. 
 
 
 ```
@@ -331,12 +331,21 @@ $gif = Gif::byGiphyId('3og0IMJcSI8p6hYQXS')->first();
 
 // Get thumbnail URL
 $thumbnail = $gif->thumbnail_url;
+```
 
-// Check if has verified author
-if ($gif->hasAuthor()) {
-    echo "By: {$gif->author_display_name}";
-}
+### Ratings & Comments
 
-// Get human-readable file size
-echo "Size: {$gif->formatted_size}";
+These two items are 50% the same, they both require the gif_id and they differ on what kind of response, either a string message or a number. 
+
+```
+curl -X 'POST' \
+  'http://localhost/api/ratings' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer 10|NrHexRFGd355HXZv1JqkU8CM91biBuf3ABzeeODK33bc6822' \
+  -H 'Content-Type: application/json' \
+  -H 'X-CSRF-TOKEN: ' \
+  -d '{
+  "gif_id": "3og0IMJcSI8p6hYQXS",
+  "rating": 5
+}'
 ```
