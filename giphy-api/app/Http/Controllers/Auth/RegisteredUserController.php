@@ -21,7 +21,7 @@ class RegisteredUserController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/register",
+     *     path="/api/register",
      *     tags={"Authentication"},
      *     summary="Register a new user",
      *     description="Create a new user account and automatically log them in",
@@ -36,8 +36,19 @@ class RegisteredUserController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=204,
-     *         description="User registered successfully"
+     *         response=200,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="1|abc123..."),
+     *             @OA\Property(property="user", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="user@example.com"),
+     *                 @OA\Property(property="email_verified_at", type="string", nullable=true),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -65,8 +76,11 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        $token = $user->createToken('auth-token')->plainTextToken;
 
-        return response()->noContent();
+        return response()->json([
+            'token' => $token,
+            'user' => $user
+        ]);
     }
 }

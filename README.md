@@ -53,7 +53,7 @@ cd giphy-api
 ./vendor/bin/sail up -d
 ./vendor/bin/sail artisan migrate --seed
 ./generate-api-docs.sh
-# Access Swagger UI: http://localhost:80/api/documentation
+# Access Swagger UI: http://localhost:8000/api/documentation
 ```
 
 **📚 [Full Backend Documentation →](giphy-api/README.md)**
@@ -100,8 +100,8 @@ The frontend will provide a modern, responsive web interface for:
    ```
 
 4. **Access the application**
-   - **Backend API**: http://localhost:80
-   - **API Documentation**: http://localhost:80/api/documentation
+   - **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/api/documentation
    - **Test Users**: See [Backend README](giphy-api/README.md#-available-test-users)
 
 ## 🔑 API Key Setup
@@ -123,7 +123,7 @@ After you have confirmed the app is up and running, there is only one more thing
 ## 📚 Documentation
 
 - **[Backend API Documentation](giphy-api/README.md)** - Complete Laravel Sail setup and API guide
-- **[Swagger UI](http://localhost:80/api/documentation)** - Interactive API documentation
+- **[Swagger UI](http://localhost:8000/api/documentation)** - Interactive API documentation
 - **[OpenAPI Specification](giphy-api/storage/api-docs/api-docs.json)** - Machine-readable API spec
 
 ## 🛠️ Development Overview

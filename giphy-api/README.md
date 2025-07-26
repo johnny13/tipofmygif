@@ -110,9 +110,9 @@ Before you begin, ensure you have the following installed:
 
 Once Laravel Sail is running, you can access:
 
-- **Main Application**: http://localhost:80
-- **Swagger UI**: http://localhost:80/api/documentation
-- **API Documentation**: http://localhost:80/api/docs
+- **Main Application**: http://localhost:8000
+- **Swagger UI**: http://localhost:8000/api/documentation
+- **API Documentation**: http://localhost:8000/api/docs
 - **Mailpit (Email Testing)**: http://localhost:8025
 - **Database**: localhost:3306 (MySQL/MariaDB)
 
@@ -253,7 +253,7 @@ The application comes with 3 pre-seeded test users ready to use:
 **Quick Start with Test Users:**
 ```bash
 # Test the API with Jane's token
-curl -X GET http://localhost:80/api/user \
+curl -X GET http://localhost:8000/api/user \
   -H "Authorization: Bearer 3|iRoY1oAo7fvTsy2czBo97fCkVz5xCqBEiC6Oh8B3dde41b5f" \
   -H "Accept: application/json"
 ```
@@ -263,7 +263,7 @@ curl -X GET http://localhost:80/api/user \
 There are 3 differnt users that are seeded when you run the seeder `./vendor/bin/sail artisan db:seed`. You can use one of those accounts to login. Once you have logged in, you will need to provide your token to make subsequent api requests. If you would like to create your own user, do somethingn like this or use `artisan tinker` and then `User::create()`. 
 
 ```shell
-curl -X POST http://localhost:80/register \
+curl -X POST http://localhost:8000/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "New User",
@@ -311,7 +311,7 @@ Once you have that magic token we can then finally look at some GIFs
 
 ```
 curl -X 'GET' \
-  'http://localhost/api/gifs/search?query=star&limit=25&offset=0' \
+  'http://localhost:8000/api/gifs/search?query=star&limit=25&offset=0' \
   -H 'accept: application/json' \
   -H 'Authorization: Bearer 3|iRoY1oAo7fvTsy2czBo97fCkVz5xCqBEiC6Oh8B3dde41b5f' \
   -H 'X-CSRF-TOKEN: 
@@ -343,7 +343,7 @@ These two items are 50% the same, they both require the gif_id and they differ o
 
 ```
 curl -X 'POST' \
-  'http://localhost/api/ratings' \
+  'http://localhost:8000/api/ratings' \
   -H 'accept: application/json' \
   -H 'Authorization: Bearer 10|NrHexRFGd355HXZv1JqkU8CM91biBuf3ABzeeODK33bc6822' \
   -H 'Content-Type: application/json' \

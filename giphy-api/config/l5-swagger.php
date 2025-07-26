@@ -51,8 +51,8 @@ return [
         ],
     ],
     'annotations' => [
-        base_path('app/Http/Controllers/Api'), // Scan API controllers
-        base_path('app/Http/Annotations'), // Optional: for security schemes
+        base_path('app/Http/Controllers'), // Scan all controllers
+        base_path('app/Http/Annotations'), // For security schemes
     ],
     'generate_always' => true, // Regenerate docs on each request
     'swagger_version' => env('SWAGGER_VERSION', '3.0.0'),
@@ -326,7 +326,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://localhost:8000'),
         ],
     ],
 ];

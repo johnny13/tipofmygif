@@ -4,9 +4,32 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> Tip of My GIF </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div class="row items-center q-gutter-sm">
+          <div v-if="authStore.isAuthenticated" class="text-body2">
+            Welcome, {{ authStore.user?.name }}
+          </div>
+          <q-btn
+            v-if="authStore.isAuthenticated"
+            flat
+            dense
+            round
+            icon="logout"
+            aria-label="Logout"
+            @click="handleLogout"
+            :loading="authStore.isLoading"
+          />
+          <q-btn
+            v-else
+            flat
+            dense
+            round
+            icon="login"
+            aria-label="Login"
+            @click="$router.push('/login')"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -25,8 +48,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
 import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import { useAuthStore } from 'src/stores/auth-store';
 
 const linksList: EssentialLinkProps[] = [
   {
@@ -73,9 +99,26 @@ const linksList: EssentialLinkProps[] = [
   },
 ];
 
+const router = useRouter();
+const $q = useQuasar();
+const authStore = useAuthStore();
+
 const leftDrawerOpen = ref(false);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+const handleLogout = async () => {
+  await authStore.logout();
+  $q.notify({
+    type: 'positive',
+    message: 'Logged out successfully!',
+  });
+  await router.push('/login');
+};
+
+onMounted(() => {
+  void authStore.initializeAuth();
+});
 </script>
