@@ -30,7 +30,7 @@
               </q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-btn flat round color="primary" icon="fas fa-eye" @click.stop="selectGif(gif)" />
+              <q-btn flat round color="primary" icon="fas fa-comment" @click.stop="commentGif(gif)" />
               <q-btn flat round color="negative" icon="fas fa-trash" @click.stop="deleteGif(gif)" />
             </q-item-section>
           </q-item>
@@ -104,8 +104,25 @@
             </q-item>
           </q-list>
           <q-btn :disabled="saveChangeLocked" :color="(saveChangeLocked) ? 'gray' : 'positive'" size="lg"
-            class="full-width q-mt-xl q-mb-sm" label="Save Changes" />
+            class="full-width q-mt-xl q-mb-sm" label="Save Changes" @click="saveChanges" />
         </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- Show Comment Dialog -->
+    <q-dialog v-model="showCommentDialog">
+      <q-card style="width: 100%;max-width: 600px;">
+        <q-card-section class="row items-center">
+          <div class="text-h6">Comment on GIF</div>
+          <q-space />
+          <q-btn icon="fas fa-times" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <q-input v-model="commentInput" label="Comment" class="q-mb-md" />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn solid label="Confirm" color="positive" @click="confirmComment" />
+        </q-card-actions>
       </q-card>
     </q-dialog>
 
@@ -190,6 +207,7 @@ interface SavedGif {
   created_at: string
   updated_at: string
   user_rating: number
+  has_user_rating: boolean
   comments: userComment[]
   ratings: userRating[]
 }
@@ -209,6 +227,8 @@ const selectedGif = ref<SavedGif | null>(null)
 const previewRatingsSelectModel = ref(1)
 const previewRatingsSelectOptions = ref([1, 2, 3, 4, 5])
 const previewCommentsArray = ref<userComment[]>([])
+const showCommentDialog = ref(false)
+const commentInput = ref('')
 
 // Load Saved GIFs. Runs on page load. Grabs ALL gifs from the database, for the current user.
 const loadSavedGifs = async () => {
@@ -258,7 +278,6 @@ const onRatingChange = (value: number) => {
   } else {
     saveChangeLocked.value = true
   }
-  // Add logic here, e.g., save to API
 };
 
 // Select a GIF to preview. This is the main function that is called when the user clicks on a GIF.
@@ -278,6 +297,45 @@ const selectGif = (gif: SavedGif) => {
 
   // Show the preview dialog.
   showPreview.value = true
+}
+
+const saveChanges = async () => {
+  if (!selectedGif.value) return
+
+  try {
+    // Save the rating
+    await api.post('/api/ratings', {
+      gif_id: selectedGif.value.giphy_id,
+      rating: previewRatingsSelectModel.value
+    })
+
+    // Update the local data
+    selectedGif.value.user_rating = previewRatingsSelectModel.value
+    selectedGif.value.has_user_rating = true
+
+    // Reset the save button state
+    saveChangeLocked.value = true
+    previewRatingsOriginalValue.value = previewRatingsSelectModel.value
+
+    $q.notify({
+      type: 'positive',
+      message: 'Rating saved successfully'
+    })
+
+    // Close the dialog
+    showPreview.value = false
+  } catch (err: unknown) {
+    const errorMessage = err && typeof err === 'object' && 'response' in err &&
+      err.response && typeof err.response === 'object' && 'data' in err.response &&
+      err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data
+      ? String(err.response.data.message)
+      : 'Failed to save rating'
+
+    $q.notify({
+      type: 'negative',
+      message: errorMessage
+    })
+  }
 }
 
 const deleteGif = (gif: SavedGif) => {
@@ -325,6 +383,45 @@ const editComment = (comment: userComment) => {
 
 const deleteComment = (comment: userComment) => {
   console.log(`Deleting comment: ${comment.id}`);
+}
+
+const commentGif = (gif: SavedGif) => {
+  selectedGif.value = gif
+  commentInput.value = ''
+  showCommentDialog.value = true
+}
+
+const confirmComment = async () => {
+  if (!selectedGif.value || !commentInput.value.trim()) return
+
+  try {
+    await api.post('/api/comments', {
+      gif_id: selectedGif.value.giphy_id,
+      comment: commentInput.value.trim()
+    })
+
+    $q.notify({
+      type: 'positive',
+      message: 'Comment added successfully'
+    })
+
+    showCommentDialog.value = false
+    commentInput.value = ''
+
+    // Reload the GIFs to get updated comments
+    await loadSavedGifs()
+  } catch (err: unknown) {
+    const errorMessage = err && typeof err === 'object' && 'response' in err &&
+      err.response && typeof err.response === 'object' && 'data' in err.response &&
+      err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data
+      ? String(err.response.data.message)
+      : 'Failed to add comment'
+
+    $q.notify({
+      type: 'negative',
+      message: errorMessage
+    })
+  }
 }
 
 const formatDate = (dateString: string) => {

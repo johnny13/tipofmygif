@@ -98,6 +98,7 @@ class Gif extends Model
      */
     public static function createFromGiphyData(array $giphyData, ?int $userId = null): self
     {
+        
         $images = $giphyData['images'] ?? [];
         $user = $giphyData['user'] ?? null;
 

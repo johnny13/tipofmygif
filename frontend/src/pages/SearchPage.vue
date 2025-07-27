@@ -105,19 +105,37 @@ import { api } from 'src/boot/axios'
 // This is what we need to fill in with data from the selected object.
 // This interface defines the structure of the Giphy data we expect to save.
 interface GiphyData {
-  title?: string;
-  url: string;
-  width?: number;
-  height?: number;
   id: string;
-  author_username: string;
-  type: string;
-  slug: string;
-  rating: string;
-  bitly_url: string;
-  original_width: number;
-  original_height: number;
-  alt_text: string;
+  title?: string;
+  slug?: string;
+  type?: string;
+  rating?: string;
+  url: string;
+  bitly_url?: string;
+  embed_url?: string;
+  username?: string;
+  import_datetime?: string;
+  trending_datetime?: string;
+  images: {
+    original: {
+      url: string;
+      width: string;
+      height: string;
+      size?: number;
+      webp?: string;
+      frames?: number;
+      hash?: string;
+    };
+    downsized: {
+      url: string;
+      width: string;
+      height: string;
+      size?: number;
+    };
+    '480w_still': {
+      url: string;
+    };
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // Allow additional fields for flexibility
 }
@@ -178,19 +196,37 @@ const saveGifClicked = async () => {
 
   const giphy_id = selectedGif.value.id;
   const giphy_data: GiphyData = {
+    id: selectedGif.value.id,
     title: selectedGif.value.title || '',
     slug: selectedGif.value.slug || '',
-    url: selectedGif.value.images.original.url,
-    width: parseInt(selectedGif.value.images.original.width) || 0,
-    height: parseInt(selectedGif.value.images.original.height) || 0,
-    id: selectedGif.value.id,
-    author_username: selectedGif.value.username || '',
     type: selectedGif.value.type || '',
     rating: selectedGif.value.rating || '',
+    url: selectedGif.value.images.original.url,
     bitly_url: selectedGif.value.bitly_url || '',
-    original_width: parseInt(selectedGif.value.images.original.width) || 0,
-    original_height: parseInt(selectedGif.value.images.original.height) || 0,
-    alt_text: selectedGif.value.title || '',
+    embed_url: selectedGif.value.images.original.url,
+    username: selectedGif.value.username || '',
+    import_datetime: new Date().toISOString(),
+    trending_datetime: new Date().toISOString(),
+    images: {
+      original: {
+        url: selectedGif.value.images.original.url,
+        width: selectedGif.value.images.original.width,
+        height: selectedGif.value.images.original.height,
+        size: 0, // This would need to come from the API response
+        webp: selectedGif.value.images.original.url,
+        frames: 0, // This would need to come from the API response
+        hash: ''
+      },
+      downsized: {
+        url: selectedGif.value.images.fixed_height_small.url,
+        width: selectedGif.value.images.fixed_height_small.width,
+        height: selectedGif.value.images.fixed_height_small.height,
+        size: 0
+      },
+      '480w_still': {
+        url: selectedGif.value.images.fixed_height_small.url // Fallback to small image
+      }
+    }
   };
 
   console.log('Data we are going to save: ', giphy_data)
