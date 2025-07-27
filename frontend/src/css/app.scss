@@ -4,3 +4,35 @@
 .input-lg-text {
   font-size: 1.5rem;
 }
+
+.main-search-btn {
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+  border-radius: 5px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  width: 100% !important;
+
+  &.q-btn {
+    .q-icon.fa-1x {
+      font-size: 1em !important;
+    }
+  }
+}
+
+.lead {
+  font-size: 1rem;
+  line-height: 1.5;
+  width: 100%;
+  display: block;
+  position: relative;
+
+  &.q-text-center {
+    text-align: center !important;
+  }
+}
+
+.q-fw-bold {
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
