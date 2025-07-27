@@ -2,7 +2,9 @@
 
 This is an API for browsing Giphy, taking the results, and saving them to your account, where you can then comment on the Gif, and Rate the Gif. Then in the future when you want to find the gif, you can either search for things you've said about the Gif, maybe something like 'only real ones get this', or search by ratings, allowing for easy retreival of things you would normally not be able to find. 
 
-There is no UI to this portion, outside of the Swagger Documentation. This project uses Laravel Sail.
+This project uses Laravel and its packages Sanctum, Sail, and loads the Swagger UI. 
+
+![Tip of My GIF Backend Preview](swagger.png)
 
 ## 🚀 Quick Start
 
