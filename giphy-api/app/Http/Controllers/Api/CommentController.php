@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 /**
  * @OA\Tag(
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class CommentController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * @OA\Get(
      *     path="/api/comments",

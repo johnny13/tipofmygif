@@ -114,7 +114,7 @@
       <q-card style="width: 100%;max-width: 600px;">
         <q-card-section class="row items-center">
           <div class="text-h6">Comment on GIF</div>
-          <q -space />
+          <q-space />
           <q-btn icon="fas fa-times" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section>
@@ -163,7 +163,7 @@ import { api } from 'src/boot/axios'
 interface userComment {
   id: number
   user_id: number
-  gif_id: number
+  gif_id: string
   comment: string
 }
 
@@ -378,11 +378,36 @@ const confirmDelete = async () => {
 }
 
 const editComment = (comment: userComment) => {
-  console.log(`Editing comment: ${comment.id}`);
+  selectedGif.value = savedGifs.value.find(gif => gif.giphy_id === comment.gif_id) || null
+  commentInput.value = comment.comment
+  showCommentDialog.value = true
 }
 
-const deleteComment = (comment: userComment) => {
-  console.log(`Deleting comment: ${comment.id}`);
+const deleteComment = async (comment: userComment) => {
+  try {
+    await api.delete(`/api/comments/${comment.id}`)
+
+    $q.notify({
+      type: 'positive',
+      message: 'Comment deleted successfully'
+    })
+
+    // Reload the GIFs to get updated comments
+    await loadSavedGifs()
+    // Close the preview dialog
+    showPreview.value = false
+  } catch (err: unknown) {
+    const errorMessage = err && typeof err === 'object' && 'response' in err &&
+      err.response && typeof err.response === 'object' && 'data' in err.response &&
+      err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data
+      ? String(err.response.data.message)
+      : 'Failed to delete comment'
+
+    $q.notify({
+      type: 'negative',
+      message: errorMessage
+    })
+  }
 }
 
 const commentGif = (gif: SavedGif) => {
@@ -395,15 +420,31 @@ const confirmComment = async () => {
   if (!selectedGif.value || !commentInput.value.trim()) return
 
   try {
-    await api.post('/api/comments', {
-      gif_id: selectedGif.value.giphy_id,
-      comment: commentInput.value.trim()
-    })
+    // Check if we're editing an existing comment
+    const existingComment = selectedGif.value.comments.find(c => c.comment === commentInput.value)
 
-    $q.notify({
-      type: 'positive',
-      message: 'Comment added successfully'
-    })
+    if (existingComment) {
+      // Update existing comment
+      await api.put(`/api/comments/${existingComment.id}`, {
+        comment: commentInput.value.trim()
+      })
+
+      $q.notify({
+        type: 'positive',
+        message: 'Comment updated successfully'
+      })
+    } else {
+      // Create new comment
+      await api.post('/api/comments', {
+        gif_id: selectedGif.value.giphy_id,
+        comment: commentInput.value.trim()
+      })
+
+      $q.notify({
+        type: 'positive',
+        message: 'Comment added successfully'
+      })
+    }
 
     showCommentDialog.value = false
     commentInput.value = ''
@@ -415,7 +456,7 @@ const confirmComment = async () => {
       err.response && typeof err.response === 'object' && 'data' in err.response &&
       err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data
       ? String(err.response.data.message)
-      : 'Failed to add comment'
+      : 'Failed to save comment'
 
     $q.notify({
       type: 'negative',

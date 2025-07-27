@@ -41,7 +41,7 @@
               </q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-btn flat round color="primary" icon="fas fa-eye" @click.stop="previewGif(gif)" />
+              <q-btn flat round color="primary" icon="fas fa-eye" @click.stop="saveGifListClicked(gif)" />
             </q-item-section>
           </q-item>
         </q-list>
@@ -183,6 +183,11 @@ const hasSearched = ref(false)
 const showPreview = ref(false)
 const showSave = ref(false)
 const selectedGif = ref<Gif | null>(null)
+
+const saveGifListClicked = async (gif: Gif) => {
+  selectedGif.value = gif
+  await saveGifClicked()
+}
 
 const saveGifClicked = async () => {
   if (!selectedGif.value) {
@@ -339,8 +344,8 @@ const selectGif = (gif: Gif) => {
   showSave.value = true
 }
 
-const previewGif = (gif: Gif) => {
-  selectedGif.value = gif
-  showPreview.value = true
-}
+// const previewGif = (gif: Gif) => {
+//   selectedGif.value = gif
+//   showPreview.value = true
+// }
 </script>
