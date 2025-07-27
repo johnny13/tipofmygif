@@ -1,6 +1,6 @@
 # tipofmygif
 
-![Tip of My GIF Logo](logo.jpeg)
+![Tip of My GIF Preview](preview.png)
 
 > **Save, rate and categorize Giphy gifs for easy retrieval later.**
 

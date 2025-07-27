@@ -114,7 +114,7 @@
       <q-card style="width: 100%;max-width: 600px;">
         <q-card-section class="row items-center">
           <div class="text-h6">Comment on GIF</div>
-          <q-space />
+          <q -space />
           <q-btn icon="fas fa-times" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section>
