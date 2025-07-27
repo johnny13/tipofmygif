@@ -121,7 +121,21 @@ class GifsController extends Controller
      *         response=200,
      *         description="User's saved GIFs",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Gif")),
+     *             @OA\Property(property="data", type="array", @OA\Items(
+                 allOf={
+                     @OA\Schema(ref="#/components/schemas/Gif"),
+                     @OA\Schema(
+                         @OA\Property(property="comments_count", type="integer", description="Number of comments on this GIF"),
+                         @OA\Property(property="has_comments", type="boolean", description="Whether this GIF has any comments"),
+                         @OA\Property(property="user_rating", type="integer", nullable=true, description="Current user's rating (1-5) or null if not rated"),
+                         @OA\Property(property="has_user_rating", type="boolean", description="Whether current user has rated this GIF"),
+                         @OA\Property(property="average_rating", type="number", nullable=true, description="Average rating for this GIF"),
+                         @OA\Property(property="ratings_count", type="integer", description="Total number of ratings for this GIF"),
+                         @OA\Property(property="comments", type="array", @OA\Items(ref="#/components/schemas/Comment"), description="Comments on this GIF"),
+                         @OA\Property(property="ratings", type="array", @OA\Items(ref="#/components/schemas/Rating"), description="All ratings for this GIF")
+                     )
+                 }
+             )),
      *             @OA\Property(property="current_page", type="integer"),
      *             @OA\Property(property="last_page", type="integer"),
      *             @OA\Property(property="per_page", type="integer"),
@@ -139,7 +153,8 @@ class GifsController extends Controller
         $userId = auth()->id();
         
         $query = Gif::byUser($userId)
-            ->with(['user', 'ratings', 'comments'])
+            ->with(['user', 'ratings', 'comments.user'])
+            ->withCount('comments')
             ->orderBy('created_at', 'desc');
 
         // Filter by rating if provided
@@ -148,6 +163,21 @@ class GifsController extends Controller
         }
 
         $gifs = $query->paginate($request->get('per_page', 20));
+
+        // Add user's rating information to each GIF
+        $gifs->getCollection()->transform(function ($gif) use ($userId) {
+            // Check if current user has rated this GIF
+            $gif->user_rating = $gif->getUserRating($userId);
+            $gif->has_user_rating = $gif->hasUserRating($userId);
+            
+            // Add comment count and other computed properties
+            $gif->comments_count = $gif->comments_count ?? $gif->comments->count();
+            $gif->has_comments = $gif->hasComments();
+            $gif->average_rating = $gif->average_rating;
+            $gif->ratings_count = $gif->ratings_count;
+            
+            return $gif;
+        });
 
         return response()->json($gifs);
     }
@@ -170,7 +200,21 @@ class GifsController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="GIF details",
-     *         @OA\JsonContent(ref="#/components/schemas/Gif")
+     *         @OA\JsonContent(
+     *             allOf={
+     *                 @OA\Schema(ref="#/components/schemas/Gif"),
+     *                 @OA\Schema(
+     *                     @OA\Property(property="comments_count", type="integer", description="Number of comments on this GIF"),
+     *                     @OA\Property(property="has_comments", type="boolean", description="Whether this GIF has any comments"),
+     *                     @OA\Property(property="user_rating", type="integer", nullable=true, description="Current user's rating (1-5) or null if not rated"),
+     *                     @OA\Property(property="has_user_rating", type="boolean", description="Whether current user has rated this GIF"),
+     *                     @OA\Property(property="average_rating", type="number", nullable=true, description="Average rating for this GIF"),
+     *                     @OA\Property(property="ratings_count", type="integer", description="Total number of ratings for this GIF"),
+     *                     @OA\Property(property="comments", type="array", @OA\Items(ref="#/components/schemas/Comment"), description="Comments on this GIF"),
+     *                     @OA\Property(property="ratings", type="array", @OA\Items(ref="#/components/schemas/Rating"), description="All ratings for this GIF")
+     *                 )
+     *             }
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -184,9 +228,22 @@ class GifsController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $gif = Gif::byUser(auth()->id())
-            ->with(['user', 'ratings', 'comments'])
+        $userId = auth()->id();
+        
+        $gif = Gif::byUser($userId)
+            ->with(['user', 'ratings', 'comments.user'])
+            ->withCount('comments')
             ->findOrFail($id);
+
+        // Add user's rating information
+        $gif->user_rating = $gif->getUserRating($userId);
+        $gif->has_user_rating = $gif->hasUserRating($userId);
+        
+        // Add comment count and other computed properties
+        $gif->comments_count = $gif->comments_count ?? $gif->comments->count();
+        $gif->has_comments = $gif->hasComments();
+        $gif->average_rating = $gif->average_rating;
+        $gif->ratings_count = $gif->ratings_count;
 
         return response()->json($gif);
     }

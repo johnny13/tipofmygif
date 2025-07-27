@@ -20,7 +20,7 @@
         <q-list bordered separator>
           <q-item v-for="gif in savedGifs" :key="gif.id" clickable @click="selectGif(gif)">
             <q-item-section avatar>
-
+              <q-img :src="gif.still_480w_url" :alt="gif.title" width="80px" height="80px" fit="cover" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ gif.title || 'Untitled' }}</q-item-label>
@@ -30,7 +30,7 @@
               </q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-btn flat round color="primary" icon="fas fa-eye" @click.stop="previewGif(gif)" />
+              <q-btn flat round color="primary" icon="fas fa-eye" @click.stop="selectGif(gif)" />
               <q-btn flat round color="negative" icon="fas fa-trash" @click.stop="deleteGif(gif)" />
             </q-item-section>
           </q-item>
@@ -47,16 +47,64 @@
     </div>
 
     <!-- GIF Preview Dialog -->
-    <q-dialog v-model="showPreview" maximized>
+    <q-dialog v-model="showPreview">
       <q-card class="bg-black">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6 text-white">{{ selectedGif?.title || 'GIF Preview' }}</div>
+          <div class="text-h6 text-white">GIF SELECTED</div>
           <q-space />
           <q-btn icon="fas fa-times" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section class="flex flex-center">
-          <q-img v-if="selectedGif" :src="selectedGif.url" :alt="selectedGif.title"
-            style="max-width: 100%; max-height: 80vh;" fit="contain" />
+          <q-img v-if="selectedGif" :src="selectedGif.still_480w_url" :alt="selectedGif.title" style="max-width: 200px;"
+            class="q-mx-auto" fit="contain" />
+        </q-card-section>
+        <q-card-section class="row items-center">
+          <div class="selectedTitle q-my-lg">
+            <div class="text-h5 text-white">{{ selectedGif?.title || ' ' }}</div>
+          </div>
+          <div class="row full-width">
+            <div class="col">
+              <q-separator class="q-my-md" />
+            </div>
+          </div>
+          <div class="lead q-mb-md q-mt-sm">
+            <div class="row">
+              <div class="col-2">RATING</div>
+              <div class="col">
+                <q-icon v-for="star in 5" :key="star"
+                  :name="star <= previewRatingsSelectModel ? 'fas fa-star fa-lg' : 'far fa-star fa-lg'" color="yellow"
+                  class="q-mr-xs" />
+              </div>
+              <div class="col">
+                <q-select filled v-model="previewRatingsSelectModel" :options="previewRatingsSelectOptions"
+                  label="Rating" dense style="min-width: 100px" @update:model-value="onRatingChange" />
+              </div>
+            </div>
+          </div>
+          <div class="row full-width">
+            <div class="col">
+              <q-separator class="q-my-md" />
+            </div>
+          </div>
+          <div class="lead q-mb-md q-mt-sm">
+            Comments
+          </div>
+          <q-list bordered class="rounded-borders full-width" v-if="previewCommentsArray.length > 0">
+            <q-item v-for="comment in previewCommentsArray" :key="comment.id">
+              <q-item-section>
+                <q-item-label>{{ comment.comment }}</q-item-label>
+              </q-item-section>
+              <q-item-section top side>
+                <div class="text-grey-8 q-gutter-xs">
+                  <q-btn class="gt-xs" size="12px" flat dense round icon="fas fa-edit" @click="editComment(comment)" />
+                  <q-btn class="gt-xs" size="12px" flat dense round icon="fas fa-trash"
+                    @click="deleteComment(comment)" />
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-list>
+          <q-btn :disabled="saveChangeLocked" :color="(saveChangeLocked) ? 'gray' : 'positive'" size="lg"
+            class="full-width q-mt-xl q-mb-sm" label="Save Changes" />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -95,6 +143,20 @@ import { api } from 'src/boot/axios'
 //   author_username?: string
 // }
 
+interface userComment {
+  id: number
+  user_id: number
+  gif_id: number
+  comment: string
+}
+
+interface userRating {
+  id: number
+  user_id: number
+  gif_id: number
+  rating: number
+}
+
 interface SavedGif {
   id: number
   giphy_id: string
@@ -127,9 +189,16 @@ interface SavedGif {
   author_is_verified: boolean
   created_at: string
   updated_at: string
+  user_rating: number
+  comments: userComment[]
+  ratings: userRating[]
 }
 
 const $q = useQuasar()
+
+// This value is used to lock the save changes button until the user has made changes to the rating or comments.
+const saveChangeLocked = ref(true)
+const previewRatingsOriginalValue = ref(0)
 
 const savedGifs = ref<SavedGif[]>([])
 const isLoading = ref(false)
@@ -137,7 +206,11 @@ const error = ref('')
 const showPreview = ref(false)
 const showDeleteConfirm = ref(false)
 const selectedGif = ref<SavedGif | null>(null)
+const previewRatingsSelectModel = ref(1)
+const previewRatingsSelectOptions = ref([1, 2, 3, 4, 5])
+const previewCommentsArray = ref<userComment[]>([])
 
+// Load Saved GIFs. Runs on page load. Grabs ALL gifs from the database, for the current user.
 const loadSavedGifs = async () => {
   isLoading.value = true
   error.value = ''
@@ -157,6 +230,8 @@ const loadSavedGifs = async () => {
         type: 'positive',
         message: `Loaded ${savedGifs.value.length} saved GIFs`
       })
+
+
     }
 
     console.log(savedGifs.value)
@@ -176,17 +251,37 @@ const loadSavedGifs = async () => {
   }
 }
 
-const selectGif = (gif: SavedGif) => {
-  selectedGif.value = gif
-  showPreview.value = true
-}
+const onRatingChange = (value: number) => {
+  console.log(`Rating changed to: ${value}`);
+  if (value !== previewRatingsOriginalValue.value) {
+    saveChangeLocked.value = false
+  } else {
+    saveChangeLocked.value = true
+  }
+  // Add logic here, e.g., save to API
+};
 
-const previewGif = (gif: SavedGif) => {
+// Select a GIF to preview. This is the main function that is called when the user clicks on a GIF.
+const selectGif = (gif: SavedGif) => {
+  // Set the selected GIF.
   selectedGif.value = gif
+
+  // Check For Rating
+  // Set the original rating value. This is used to determine if the user has made changes to the rating.
+  previewRatingsOriginalValue.value = selectedGif.value.user_rating || 0
+
+  // Set the rating value. This is used to display the rating in the preview.
+  previewRatingsSelectModel.value = selectedGif.value.user_rating || 0
+
+  // Set the comments array. This is used to display the comments in the preview. 
+  previewCommentsArray.value = selectedGif.value.comments
+
+  // Show the preview dialog.
   showPreview.value = true
 }
 
 const deleteGif = (gif: SavedGif) => {
+  console.log(`Deleting GIF: ${gif.id}`);
   selectedGif.value = gif
   showDeleteConfirm.value = true
 }
@@ -222,6 +317,14 @@ const confirmDelete = async () => {
       message: errorMessage
     })
   }
+}
+
+const editComment = (comment: userComment) => {
+  console.log(`Editing comment: ${comment.id}`);
+}
+
+const deleteComment = (comment: userComment) => {
+  console.log(`Deleting comment: ${comment.id}`);
 }
 
 const formatDate = (dateString: string) => {

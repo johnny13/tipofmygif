@@ -411,7 +411,56 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Gif"
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/Gif"
+                                                    },
+                                                    {
+                                                        "properties": {
+                                                            "comments_count": {
+                                                                "description": "Number of comments on this GIF",
+                                                                "type": "integer"
+                                                            },
+                                                            "has_comments": {
+                                                                "description": "Whether this GIF has any comments",
+                                                                "type": "boolean"
+                                                            },
+                                                            "user_rating": {
+                                                                "description": "Current user's rating (1-5) or null if not rated",
+                                                                "type": "integer",
+                                                                "nullable": true
+                                                            },
+                                                            "has_user_rating": {
+                                                                "description": "Whether current user has rated this GIF",
+                                                                "type": "boolean"
+                                                            },
+                                                            "average_rating": {
+                                                                "description": "Average rating for this GIF",
+                                                                "type": "number",
+                                                                "nullable": true
+                                                            },
+                                                            "ratings_count": {
+                                                                "description": "Total number of ratings for this GIF",
+                                                                "type": "integer"
+                                                            },
+                                                            "comments": {
+                                                                "description": "Comments on this GIF",
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "$ref": "#/components/schemas/Comment"
+                                                                }
+                                                            },
+                                                            "ratings": {
+                                                                "description": "All ratings for this GIF",
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "$ref": "#/components/schemas/Rating"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                ]
                                             }
                                         },
                                         "current_page": {
@@ -468,7 +517,56 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Gif"
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Gif"
+                                        },
+                                        {
+                                            "properties": {
+                                                "comments_count": {
+                                                    "description": "Number of comments on this GIF",
+                                                    "type": "integer"
+                                                },
+                                                "has_comments": {
+                                                    "description": "Whether this GIF has any comments",
+                                                    "type": "boolean"
+                                                },
+                                                "user_rating": {
+                                                    "description": "Current user's rating (1-5) or null if not rated",
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "has_user_rating": {
+                                                    "description": "Whether current user has rated this GIF",
+                                                    "type": "boolean"
+                                                },
+                                                "average_rating": {
+                                                    "description": "Average rating for this GIF",
+                                                    "type": "number",
+                                                    "nullable": true
+                                                },
+                                                "ratings_count": {
+                                                    "description": "Total number of ratings for this GIF",
+                                                    "type": "integer"
+                                                },
+                                                "comments": {
+                                                    "description": "Comments on this GIF",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Comment"
+                                                    }
+                                                },
+                                                "ratings": {
+                                                    "description": "All ratings for this GIF",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Rating"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
                                 }
                             }
                         }

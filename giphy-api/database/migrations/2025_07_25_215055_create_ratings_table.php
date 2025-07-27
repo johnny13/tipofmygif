@@ -17,6 +17,13 @@ return new class extends Migration
             $table->string('gif_id'); // Giphy GIF ID
             $table->integer('rating')->between(1, 5); // Rating from 1 to 5
             $table->timestamps();
+            
+            // Ensure only one rating per user per GIF
+            $table->unique(['user_id', 'gif_id']);
+            
+            // Add indexes for better performance
+            $table->index(['gif_id']);
+            $table->index(['user_id']);
         });
     }
 

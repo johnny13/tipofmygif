@@ -312,4 +312,49 @@ class Gif extends Model
     {
         return $query->whereNotNull('created_by');
     }
+
+    /**
+     * Check if the GIF has any comments
+     */
+    public function hasComments(): bool
+    {
+        return $this->comments_count > 0 || $this->comments->count() > 0;
+    }
+
+    /**
+     * Check if a specific user has rated this GIF
+     */
+    public function hasUserRating(int $userId): bool
+    {
+        return $this->ratings->where('user_id', $userId)->count() > 0;
+    }
+
+    /**
+     * Get the rating given by a specific user
+     */
+    public function getUserRating(int $userId): ?int
+    {
+        $rating = $this->ratings->where('user_id', $userId)->first();
+        return $rating ? $rating->rating : null;
+    }
+
+    /**
+     * Get the average rating for this GIF
+     */
+    public function getAverageRatingAttribute(): ?float
+    {
+        if ($this->ratings->count() === 0) {
+            return null;
+        }
+
+        return round($this->ratings->avg('rating'), 2);
+    }
+
+    /**
+     * Get the total number of ratings for this GIF
+     */
+    public function getRatingsCountAttribute(): int
+    {
+        return $this->ratings->count();
+    }
 } 
