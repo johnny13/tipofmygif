@@ -78,45 +78,52 @@ Get a **Giphy API Key** setup and enabled:
 ### Installation
 
 1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd tipofmygif
-   ``` 
+```bash
+git clone <repository-url>
+cd tipofmygif
+``` 
 
 1b. **.env file setup**
-   ```bash
-   cd giphy-api
-   cp .env.example .env
-   # configure the database. I recommend the sail defaults for mysql
-   # Edit .env and add your Giphy API key
-   GIPHY_API_KEY=your_giphy_api_key_here
-   ```
+```bash
+cd giphy-api
+cp .env.example .env
+# configure the database. I recommend the sail defaults for mysql
+# Edit .env and add your Giphy API key
+GIPHY_API_KEY=your_giphy_api_key_here
+```
 
 2. **Setup the backend**
-   ```bash
-   # still from the giphy-api directory
-   composer install
-   ./vendor/bin/sail up -d # assuming docker is installed and running
-   ./vendor/bin/sail artisan migrate --seed
-   ./generate-api-docs.sh
+```bash
+# still from the giphy-api directory
+composer install
+./vendor/bin/sail up -d # assuming docker is installed and running
+./vendor/bin/sail artisan migrate --seed
+./generate-api-docs.sh
    ```
 
-3. **Access the application**
+2b. **Access the application API**
    - **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/api/documentation
+   - **API Documentation**: http://localhost:8000/api/documentation
    - **Test Users**: See [Backend README](giphy-api/README.md#-available-test-users)
 
+3. **Setup the frontend**
+```bash
+cd frontend
+npm install
+npm run dev # browser should open to quasar app @ http://localhost:9001
+```
 
-## 📚 Documentation
+3b. **Access the application UI**
+   - **Frontend**: http://localhost:9001
+
+
+## 📚 Additional Documentation
 
 - **[Backend API Documentation](giphy-api/README.md)** - Complete Laravel Sail setup and API guide
 - **[Swagger UI](http://localhost:8000/api/documentation)** - Interactive API documentation
 - **[OpenAPI Specification](giphy-api/storage/api-docs/api-docs.json)** - Machine-readable API spec
 - **[Frontend App Documentation](frontend/README.md)** - Details for the Quasar v2 w/ Typescript UI
 
-
-### Frontend Development
-*Frontend development setup coming soon...*
 
 ## 🤝 Contributing
 
