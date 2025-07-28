@@ -6,7 +6,9 @@
 
 ## 🎯 About
 
-Tip of My GIF is a comprehensive solution for managing and organizing your favorite GIFs from Giphy. Ever had that moment where you remember a perfect GIF but can't find it? This project solves that problem by allowing you to save, rate, and categorize GIFs with your own comments and ratings, making them easily searchable later.
+_**NOTE** This is an example project not inteded for real world use._
+
+Tip of My GIF can be used for managing and organizing your favorite GIFs from Giphy. Ever had that moment where you remember a perfect GIF but can't find it? This project solves that problem by allowing you to save, rate, and categorize GIFs with your own comments and ratings, making them easily searchable later.
 
 ### ✨ Features
 
