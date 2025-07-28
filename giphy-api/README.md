@@ -179,6 +179,18 @@ giphy-api/
 └── README.md                     # This file
 ```
 
+## 🛠️ Relationships Overview
+
+Currently this is the way things are setup in regards to the models and their relationships with eachother. 
+
+```
+User (1) ←→ (Many) Gif
+User (1) ←→ (Many) Rating  
+User (1) ←→ (Many) Comment
+Gif (1) ←→ (Many) Rating
+Gif (1) ←→ (Many) Comment
+```
+
 ## 🔧 Services & Components
 
 - **Laravel Sail**: Docker-based development environment

@@ -47,20 +47,9 @@ The backend is a **Laravel-based REST API** powered by Laravel Sail for easy dev
 - **Documentation**: OpenAPI/Swagger with interactive UI
 - **Development**: Docker-based with hot reloading
 
-**🚀 Quick Backend Start:**
-```bash
-cd giphy-api
-./vendor/bin/sail up -d
-./vendor/bin/sail artisan migrate --seed
-./generate-api-docs.sh
-# Access Swagger UI: http://localhost:8000/api/documentation
-```
+### 🎨 Frontend (frontend/)
 
-**📚 [Full Backend Documentation →](giphy-api/README.md)**
-
-### 🎨 Frontend (Coming Soon)
-
-The frontend will provide a modern, responsive web interface for:
+The frontend will provides a modern, responsive web interface for:
 - Browsing and searching Giphy GIFs
 - Managing your saved GIF collection
 - Rating and commenting on GIFs
@@ -73,6 +62,18 @@ The frontend will provide a modern, responsive web interface for:
 - **Docker Desktop** - [Download here](https://www.docker.com/products/docker-desktop/)
 - **Giphy API Key** - [Get one here](https://developers.giphy.com/)
 - **Git** - [Download here](https://git-scm.com/downloads)
+- **Node** - [Download here](https://nodejs.org/)
+
+ 
+#### 🔑 API Key Setup
+
+Get a **Giphy API Key** setup and enabled:
+
+ **Get a Giphy API Key**:
+   - Visit [Giphy Developers](https://developers.giphy.com/)
+   - Create an account and register your app
+   - Copy your API key
+
 
 ### Installation
 
@@ -80,63 +81,39 @@ The frontend will provide a modern, responsive web interface for:
    ```bash
    git clone <repository-url>
    cd tipofmygif
-   ```
+   ``` 
 
-2. **Setup the backend**
+1b. **.env file setup**
    ```bash
    cd giphy-api
-   ./vendor/bin/sail up -d
-   ./vendor/bin/sail artisan migrate --seed
-   ./generate-api-docs.sh
-   ```
-
-3. **Configure Giphy API Key**
-   ```bash
-   # Copy environment file
    cp .env.example .env
-   
+   # configure the database. I recommend the sail defaults for mysql
    # Edit .env and add your Giphy API key
    GIPHY_API_KEY=your_giphy_api_key_here
    ```
 
-4. **Access the application**
+2. **Setup the backend**
+   ```bash
+   # still from the giphy-api directory
+   composer install
+   ./vendor/bin/sail up -d # assuming docker is installed and running
+   ./vendor/bin/sail artisan migrate --seed
+   ./generate-api-docs.sh
+   ```
+
+3. **Access the application**
    - **Backend API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/api/documentation
    - **Test Users**: See [Backend README](giphy-api/README.md#-available-test-users)
 
-## 🔑 API Key Setup
-
-After you have confirmed the app is up and running, there is only one more thing you nneed to do to start searching. Get a **Giphy API Key** enabled:
-
-1. **Get a Giphy API Key**:
-   - Visit [Giphy Developers](https://developers.giphy.com/)
-   - Create an account and register your app
-   - Copy your API key
-
-2. **Configure the API Key**:
-   ```bash
-   cd giphy-api
-   # Edit .env file
-   GIPHY_API_KEY=your_actual_api_key_here
-   ```
 
 ## 📚 Documentation
 
 - **[Backend API Documentation](giphy-api/README.md)** - Complete Laravel Sail setup and API guide
 - **[Swagger UI](http://localhost:8000/api/documentation)** - Interactive API documentation
 - **[OpenAPI Specification](giphy-api/storage/api-docs/api-docs.json)** - Machine-readable API spec
+- **[Frontend App Documentation](frontend/README.md)** - Details for the Quasar v2 w/ Typescript UI
 
-## 🛠️ Development Overview
-
-Currently this is the way things are setup. Pretty standard. The backend uses OpenAPI and Swagger powered by Laravel. 
-
-```
-User (1) ←→ (Many) Gif
-User (1) ←→ (Many) Rating  
-User (1) ←→ (Many) Comment
-Gif (1) ←→ (Many) Rating
-Gif (1) ←→ (Many) Comment
-```
 
 ### Frontend Development
 *Frontend development setup coming soon...*
